@@ -1,0 +1,91 @@
+!Core-1
+enable
+configure terminal
+interface GigabitEthernet0/0
+ ip address 10.28.88.1 255.255.255.248
+exit
+interface GigabitEthernet1/0
+ ip address 10.28.88.9 255.255.255.248
+exit
+interface GigabitEthernet2/0
+ ip address 10.28.88.17 255.255.255.248
+exit
+interface GigabitEthernet3/0
+ ip address 103.133.254.254 255.255.255.0
+exit
+router ospf 1
+ router-id 1.2.3.0
+ redistribute bgp 65002 subnets
+ network 10.28.88.0 0.0.0.7 area 0
+ network 10.28.88.8 0.0.0.7 area 1
+ network 10.28.88.16 0.0.0.7 area 2
+exit
+router bgp 65002
+ no synchronization
+ neighbor 103.133.254.1 remote-as 65001
+ network 103.133.254.0 mask 255.255.255.0
+ redistribute ospf 1
+exit
+end
+copy running-config startup-config
+
+!Core-2
+enable
+configure terminal
+hostname CR2
+interface GigabitEthernet0/0
+ ip address 103.133.254.1 255.255.255.0
+ no shutdown
+exit
+router bgp 65001
+ bgp log-neighbor-changes
+ no synchronization
+ neighbor 10.133.254.1 remote-as 65002
+ neighbor 103.133.254.254 remote-as 65002
+ network 103.133.254.0 mask 255.255.255.0
+exit
+end
+copy running-config startup-config
+
+
+!Core-Switch
+enable
+configure terminal
+hostname Switch
+spanning-tree mode pvst
+spanning-tree extend system-id
+interface GigabitEthernet0/1
+ no shutdown
+exit
+interface GigabitEthernet1/1
+ no shutdown
+exit
+interface GigabitEthernet2/1
+ no shutdown
+exit
+interface GigabitEthernet3/1
+ no shutdown
+exit
+interface GigabitEthernet4/1
+ no shutdown
+exit
+interface GigabitEthernet5/1
+ no shutdown
+exit
+interface GigabitEthernet6/1
+ no shutdown
+exit
+interface Vlan1
+ no ip address
+ shutdown
+exit
+line con 0
+exit
+line vty 0 4
+ login
+exit
+line vty 5 15
+ login
+exit
+end
+copy running-config startup-config
