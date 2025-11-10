@@ -1,0 +1,147 @@
+!Dist-Switch-1
+enable
+configure terminal
+vlan 10
+name Student
+vlan 20
+name Teacher
+vlan 30
+name Academic
+interface FastEthernet0/1
+switchport access vlan 10
+switchport mode access
+exit
+interface FastEthernet0/2
+switchport access vlan 10
+exit
+interface FastEthernet0/3
+switchport access vlan 10
+exit
+interface FastEthernet0/4
+switchport access vlan 10
+exit
+interface FastEthernet0/5
+switchport access vlan 10
+exit
+interface FastEthernet0/6
+switchport access vlan 10
+exit
+interface FastEthernet0/7
+switchport access vlan 10
+exit
+interface FastEthernet0/8
+switchport access vlan 10
+exit
+interface FastEthernet0/9
+switchport access vlan 20
+exit
+interface FastEthernet0/10
+switchport access vlan 20
+exit
+interface FastEthernet0/11
+switchport access vlan 20
+exit
+interface FastEthernet0/12
+switchport access vlan 20
+exit
+interface FastEthernet0/13
+switchport access vlan 20
+exit
+interface FastEthernet0/14
+switchport access vlan 20
+exit
+interface FastEthernet0/15
+switchport access vlan 20
+exit
+interface FastEthernet0/16
+switchport access vlan 20
+exit
+interface FastEthernet0/17
+switchport access vlan 30
+exit
+interface FastEthernet0/18
+switchport access vlan 30
+exit
+interface FastEthernet0/19
+switchport access vlan 30
+exit
+interface FastEthernet0/20
+switchport access vlan 30
+exit
+interface FastEthernet0/21
+switchport access vlan 30
+exit
+interface FastEthernet0/22
+switchport access vlan 30
+exit
+interface FastEthernet0/23
+switchport access vlan 30
+exit
+interface FastEthernet0/24
+switchport access vlan 30
+exit
+interface GigabitEthernet0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan remove 1002
+switchport trunk allowed vlan add 1002
+exit
+interface GigabitEthernet0/2
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan remove 1002
+switchport trunk allowed vlan add 1002
+exit
+end
+copy running-config startup-config
+
+!Dist-1
+enable
+configure terminal
+! DHCP TE JHAMELA
+ip dhcp excluded-address 10.28.32.1 10.28.39.255
+ip dhcp excluded-address 10.28.64.1 10.28.67.255
+ip dhcp excluded-address 10.28.80.1 10.28.81.255
+interface GigabitEthernet0/0
+ no shutdown
+interface GigabitEthernet2/0
+ no shutdown
+ip dhcp pool vlan10
+ network 10.28.32.0 255.255.248.0
+ default-router 10.28.32.1
+ dns-server 103.133.254.2
+exit
+ip dhcp pool vlan20
+ network 10.28.64.0 255.255.252.0
+ default-router 10.28.64.1
+ dns-server 103.133.254.2
+exit
+ip dhcp pool vlan30
+ network 10.28.80.0 255.255.254.0
+ default-router 10.28.80.1
+ dns-server 103.133.254.2
+exit
+interface GigabitEthernet0/0
+ ip address 10.28.88.2 255.255.255.248
+exit
+interface GigabitEthernet2/0.10
+ encapsulation dot1Q 10
+ ip address 10.28.32.1 255.255.248.0
+exit
+interface GigabitEthernet2/0.20
+ encapsulation dot1Q 20
+ ip address 10.28.64.1 255.255.252.0
+exit
+interface GigabitEthernet2/0.30
+ encapsulation dot1Q 30
+ ip address 10.28.80.1 255.255.254.0
+exit
+router ospf 1
+ router-id 1.1.1.1
+ network 10.28.88.0 0.0.0.7 area 0
+ network 10.28.32.0 0.0.7.255 area 0
+ network 10.28.64.0 0.0.3.255 area 0
+ network 10.28.80.0 0.0.1.255 area 0
+exit
+end
+copy running-config startup-config
